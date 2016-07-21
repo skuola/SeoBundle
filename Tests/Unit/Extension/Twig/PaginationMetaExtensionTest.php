@@ -1,8 +1,8 @@
 <?php
 
-namespace Skuola\SeoBundle\Tests\Extension;
+namespace OpenSkuola\SeoBundle\Tests\Extension;
 
-use Skuola\SeoBundle\Extension\Twig\PaginationMetaExtension;
+use OpenSkuola\SeoBundle\Extension\Twig\PaginationMetaExtension;
 use Symfony\Component\Routing\Router;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Mockery as m;

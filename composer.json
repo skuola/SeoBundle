@@ -20,9 +20,8 @@
     "mockery/mockery": "dev-master"
   },
   "autoload": {
-    "psr-0": { "Skuola\\SeoBundle": "" }
+    "psr-4": { "OpenSkuola\\SeoBundle\\": "" }
   },
-  "target-dir": "Skuola/SeoBundle",
   "extra": {
     "branch-alias": {
       "dev-master": "1.0-dev"

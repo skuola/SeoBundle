@@ -10,4 +10,4 @@ $ phpunit
 EOT
     );
 }
-$loader->add('Skuola\SeoBundle\Tests', __DIR__);
+$loader->add('OpenSkuola\SeoBundle\Tests', __DIR__);

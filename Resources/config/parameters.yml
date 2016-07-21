@@ -1,2 +1,2 @@
 parameters:
-    skuola_seo.twig_pagination_meta.extension.class: Skuola\SeoBundle\Extension\Twig\PaginationMetaExtension
+    skuola_seo.twig_pagination_meta.extension.class: OpenSkuola\SeoBundle\Extension\Twig\PaginationMetaExtension

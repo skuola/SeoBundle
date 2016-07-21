@@ -1,6 +1,6 @@
 <?php
 
-namespace Skuola\SeoBundle\DependencyInjection;
+namespace OpenSkuola\SeoBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;

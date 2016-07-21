@@ -1,6 +1,6 @@
 <?php
 
-namespace Skuola\SeoBundle;
+namespace OpenSkuola\SeoBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Skuola\SeoBundle\DependencyInjection;
+namespace OpenSkuola\SeoBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;

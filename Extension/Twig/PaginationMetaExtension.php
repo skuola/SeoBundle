@@ -1,6 +1,6 @@
 <?php
 
-namespace Skuola\SeoBundle\Extension\Twig;
+namespace OpenSkuola\SeoBundle\Extension\Twig;
 
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Symfony\Component\Routing\Generator\UrlGenerator;
