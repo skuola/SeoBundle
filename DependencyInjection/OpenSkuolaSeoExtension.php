@@ -7,7 +7,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
-class SkuolaSeoExtension extends Extension
+class OpenSkuolaSeoExtension extends Extension
 {
     /**
      * {@inheritdoc}
@@ -22,6 +22,6 @@ class SkuolaSeoExtension extends Extension
         $loader->load('parameters.yml');
         $loader->load('twig.yml');
 
-        $container->setParameter('skuola_seo', $config);
+        $container->setParameter('open_skuola_seo', $config);
     }
 }

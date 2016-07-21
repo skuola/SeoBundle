@@ -15,7 +15,7 @@ public function registerBundles()
 {
     return array(
         // ...
-        new OpenSkuola\SeoBundle\SkuolaSeoBundle()
+        new OpenSkuola\SeoBundle\OpenSkuolaSeoBundle()
     );
 }
 ```
