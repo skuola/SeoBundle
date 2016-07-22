@@ -11,6 +11,7 @@ class PaginationMetaExtension extends \Twig_Extension
 {
     const NEXT = 'next';
     const PREV = 'prev';
+    const FIRST_PAGE = 1;
 
     /**
      * @var RouterInterface
@@ -72,6 +73,14 @@ class PaginationMetaExtension extends \Twig_Extension
         $routeInfo['name'] = $pagination->getRoute();
 
         $routeInfo['params'] = $pagination->getQuery(compact('page'));
+
+        $pageParameterName = $pagination->getPaginatorOption('pageParameterName');
+
+        if (!empty($routeInfo['params'][$pageParameterName])) {
+            if ($routeInfo['params'][$pageParameterName] <= self::FIRST_PAGE) {
+                unset($routeInfo['params'][$pageParameterName]);
+            }
+        }
 
         return sprintf('<link rel="%s" href="%s">',
             $direction,

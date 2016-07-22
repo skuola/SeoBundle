@@ -35,11 +35,11 @@ class PaginationMetaExtensionTest extends \PHPUnit_Framework_TestCase
         $pagination = m::mock(SlidingPagination::class);
 
         $pagination->shouldReceive('getPaginationData')
-                   ->once()
-                   ->andReturn([
-                       'previous' => '0',
-                       'next'     => '0'
-                   ]);
+            ->once()
+            ->andReturn([
+                'previous' => '0',
+                'next'     => '0'
+            ]);
 
         $this->assertEmpty($this->extension->renderPaginationMeta($pagination));
     }
@@ -64,6 +64,10 @@ class PaginationMetaExtensionTest extends \PHPUnit_Framework_TestCase
                 'direction' => 'asc',
                 'sort'      => 'sorting'
             ]);
+
+        $pagination->shouldReceive('getPaginatorOption')
+            ->with('pageParameterName')
+            ->andReturn('page');
 
         $this->router->shouldReceive('generate')
             ->once()
@@ -97,6 +101,10 @@ class PaginationMetaExtensionTest extends \PHPUnit_Framework_TestCase
                 'sort'      => 'sorting'
             ]);
 
+        $pagination->shouldReceive('getPaginatorOption')
+            ->with('pageParameterName')
+            ->andReturn('page');
+
         $this->router->shouldReceive('generate')
             ->once()
             ->andReturn('http://local.domain.it/test/path-info?page=9');
@@ -128,6 +136,10 @@ class PaginationMetaExtensionTest extends \PHPUnit_Framework_TestCase
                 'direction' => 'asc',
                 'sort'      => 'sorting'
             ]);
+
+        $pagination->shouldReceive('getPaginatorOption')
+            ->with('pageParameterName')
+            ->andReturn('page');
 
         $this->router->shouldReceive('generate')
             ->twice()
