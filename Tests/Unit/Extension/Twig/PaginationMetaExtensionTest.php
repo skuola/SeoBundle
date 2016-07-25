@@ -3,6 +3,9 @@
 namespace OpenSkuola\SeoBundle\Tests\Extension;
 
 use OpenSkuola\SeoBundle\Extension\Twig\PaginationMetaExtension;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Router;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Mockery as m;
@@ -147,6 +150,73 @@ class PaginationMetaExtensionTest extends \PHPUnit_Framework_TestCase
                 'http://local.domain.it/test/path-info?page=7',
                 'http://local.domain.it/test/path-info?page=9'
             );
+
+        $this->assertEquals(
+            '<link rel="prev" href="http://local.domain.it/test/path-info?page=7"><link rel="next" href="http://local.domain.it/test/path-info?page=9">',
+            $this->extension->renderPaginationMeta($pagination)
+        );
+    }
+
+    public function testExtensionGivePrevAndNextInBetweenPagesWithRequestStack()
+    {
+        $pagination = m::mock(SlidingPagination::class);
+
+        $pagination->shouldReceive('getPaginationData')
+            ->once()
+            ->andReturn([
+                'previous' => '7',
+                'next'     => '9'
+            ]);
+
+        $pagination->shouldReceive('getRoute')
+            ->twice()
+            ->andReturn('dummy_route');
+
+        $pagination->shouldReceive('getQuery')
+            ->twice()
+            ->andReturn([
+                'direction' => 'asc',
+                'sort'      => 'sorting'
+            ]);
+
+        $pagination->shouldReceive('getPaginatorOption')
+            ->with('pageParameterName')
+            ->andReturn('page');
+
+        $pagination->shouldReceive('getPaginatorOption')
+            ->with('sortFieldParameterName')
+            ->andReturn('sort');
+
+        $pagination->shouldReceive('getPaginatorOption')
+            ->with('sortDirectionParameterName')
+            ->andReturn('direction');
+
+        $request = new Request();
+        $request->query->set('sort', null);
+        $request->query->set('direction', null);
+
+        $requestStack = m::mock(RequestStack::class);
+        $requestStack->shouldReceive('getCurrentRequest')
+            ->andReturn($request);
+
+        $this->extension->setRequestStack($requestStack);
+
+        $this->router->shouldReceive('generate')
+            ->twice()
+            ->withArgs(
+                function ($name, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH) {
+                    return (
+                        $name === 'dummy_route' &&
+                        $parameters === [] &&
+                        $referenceType == UrlGeneratorInterface::ABSOLUTE_URL
+                    );
+                }
+            )
+            ->andReturn(
+                'http://local.domain.it/test/path-info?page=7',
+                'http://local.domain.it/test/path-info?page=9'
+            );
+        ;
 
         $this->assertEquals(
             '<link rel="prev" href="http://local.domain.it/test/path-info?page=7"><link rel="next" href="http://local.domain.it/test/path-info?page=9">',
