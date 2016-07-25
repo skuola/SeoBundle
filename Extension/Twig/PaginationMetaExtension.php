@@ -3,10 +3,15 @@
 namespace OpenSkuola\SeoBundle\Extension\Twig;
 
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
+/**
+ * Class PaginationMetaExtension
+ * @package OpenSkuola\SeoBundle\Extension\Twig
+ */
 class PaginationMetaExtension extends \Twig_Extension
 {
     const NEXT = 'next';
@@ -19,16 +24,28 @@ class PaginationMetaExtension extends \Twig_Extension
     protected $router;
 
     /**
+     * @var RequestStack
+     */
+    protected $requestStack;
+
+    /**
      * @var PropertyAccess
      */
     protected $accessor;
 
+    /**
+     * PaginationMetaExtension constructor.
+     * @param RouterInterface $router
+     */
     public function __construct(RouterInterface $router)
     {
         $this->router = $router;
         $this->accessor = PropertyAccess::createPropertyAccessor();
     }
 
+    /**
+     * @return array
+     */
     public function getFunctions()
     {
         return [
@@ -37,18 +54,26 @@ class PaginationMetaExtension extends \Twig_Extension
         ];
     }
 
+    /**
+     * @param SlidingPagination $pagination
+     * @return string
+     */
     public function renderPaginationRobots(SlidingPagination $pagination)
     {
         $index_value = 'index';
         $follow_value = 'follow';
 
-        if($pagination->getCurrentPageNumber() > 1){
+        if ($pagination->getCurrentPageNumber() > 1) {
             $index_value = 'noindex';
         }
 
         return sprintf('<meta name="robots" content="%s,%s" />', $index_value, $follow_value);
     }
 
+    /**
+     * @param SlidingPagination $pagination
+     * @return string
+     */
     public function renderPaginationMeta(SlidingPagination $pagination)
     {
         $paginationData = $pagination->getPaginationData();
@@ -68,6 +93,12 @@ class PaginationMetaExtension extends \Twig_Extension
         return $paginationMetas;
     }
 
+    /**
+     * @param SlidingPagination $pagination
+     * @param $direction
+     * @param $page
+     * @return string
+     */
     protected function generateMeta(SlidingPagination $pagination, $direction, $page)
     {
         $routeInfo['name'] = $pagination->getRoute();
@@ -82,6 +113,20 @@ class PaginationMetaExtension extends \Twig_Extension
             }
         }
 
+        if ($this->getRequestStack() && $request =  $this->getRequestStack()->getCurrentRequest()) {
+            array_map(
+                function($parameter) use (&$routeInfo, $request) {
+                    if (!$request->query->get($parameter)) {
+                        unset($routeInfo['params'][$parameter]);
+                    }
+                },
+                [
+                    $pagination->getPaginatorOption('sortFieldParameterName'),
+                    $pagination->getPaginatorOption('sortDirectionParameterName')
+                ]
+            );
+        }
+
         return sprintf('<link rel="%s" href="%s">',
             $direction,
             $this->router->generate(
@@ -92,6 +137,28 @@ class PaginationMetaExtension extends \Twig_Extension
         );
     }
 
+    /**
+     * @return RequestStack
+     */
+    public function getRequestStack()
+    {
+        return $this->requestStack;
+    }
+
+    /**
+     * @param RequestStack $requestStack
+     * @return $this
+     */
+    public function setRequestStack($requestStack)
+    {
+        $this->requestStack = $requestStack;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getName()
     {
         return 'twig_pagination_meta_extension';
