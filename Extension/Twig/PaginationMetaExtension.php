@@ -17,6 +17,11 @@ class PaginationMetaExtension extends \Twig_Extension
     const NEXT = 'next';
     const PREV = 'prev';
     const FIRST_PAGE = 1;
+    
+    protected $badRouteInfoParams = array(
+        'direction',
+        'sort'
+    );
 
     /**
      * @var RouterInterface
@@ -126,15 +131,33 @@ class PaginationMetaExtension extends \Twig_Extension
                 ]
             );
         }
+        
+        $routeInfo['params'] = $this->cleanRouteInfoParams($routeInfo['params']);
+
+        $generatedUrl = $this->router->generate(
+            $routeInfo['name'],
+            $routeInfo['params'],
+            UrlGenerator::ABSOLUTE_URL
+        );
 
         return sprintf('<link rel="%s" href="%s">',
             $direction,
-            $this->router->generate(
-                $routeInfo['name'],
-                $routeInfo['params'],
-                UrlGenerator::ABSOLUTE_URL
-            )
+            $generatedUrl
         );
+    }
+    
+    /**
+     * @param array
+     * @return array
+     */
+    public function cleanRouteInfoParams($routeInfoParams)
+    {
+        foreach($this->badRouteInfoParams as $badParam)
+        {
+            if(isset($routeInfoParams[$badParam])) unset($routeInfoParams[$badParam]);
+        }
+
+        return $routeInfoParams;
     }
 
     /**
