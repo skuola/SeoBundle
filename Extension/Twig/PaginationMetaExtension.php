@@ -3,6 +3,7 @@
 namespace OpenSkuola\SeoBundle\Extension\Twig;
 
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RouterInterface;
@@ -17,11 +18,6 @@ class PaginationMetaExtension extends \Twig_Extension
     const NEXT = 'next';
     const PREV = 'prev';
     const FIRST_PAGE = 1;
-    
-    protected $badRouteInfoParams = array(
-        'direction',
-        'sort'
-    );
 
     /**
      * @var RouterInterface
@@ -39,11 +35,17 @@ class PaginationMetaExtension extends \Twig_Extension
     protected $accessor;
 
     /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    /**
      * PaginationMetaExtension constructor.
      * @param RouterInterface $router
      */
-    public function __construct(RouterInterface $router)
+    public function __construct(RouterInterface $router, ContainerInterface $container)
     {
+        $this->container = $container;
         $this->router = $router;
         $this->accessor = PropertyAccess::createPropertyAccessor();
     }
@@ -131,7 +133,7 @@ class PaginationMetaExtension extends \Twig_Extension
                 ]
             );
         }
-        
+
         $routeInfo['params'] = $this->cleanRouteInfoParams($routeInfo['params']);
 
         $generatedUrl = $this->router->generate(
@@ -145,14 +147,16 @@ class PaginationMetaExtension extends \Twig_Extension
             $generatedUrl
         );
     }
-    
+
     /**
      * @param array
      * @return array
      */
     public function cleanRouteInfoParams($routeInfoParams)
     {
-        foreach($this->badRouteInfoParams as $badParam)
+        $badRouteParams = $this->container->getParameter('skuola_seo.bad_route_info_params');
+
+        foreach($badRouteParams as $badParam)
         {
             if(isset($routeInfoParams[$badParam])) unset($routeInfoParams[$badParam]);
         }

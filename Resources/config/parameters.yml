@@ -1,2 +1,3 @@
 parameters:
     skuola_seo.twig_pagination_meta.extension.class: OpenSkuola\SeoBundle\Extension\Twig\PaginationMetaExtension
+    skuola_seo.bad_route_info_params: ["direction", "sort"]
