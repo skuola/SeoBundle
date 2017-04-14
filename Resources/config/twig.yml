@@ -1,7 +1,7 @@
 services:
     skuola_seo.twig_pagination_meta.extension:
         class: "%skuola_seo.twig_pagination_meta.extension.class%"
-        arguments: [ "@router", "@service_container"]
+        arguments: [ "@router", "%skuola_seo.bad_route_info_params%"]
         calls:
             - [setRequestStack, [ "@request_stack" ]]
         tags:

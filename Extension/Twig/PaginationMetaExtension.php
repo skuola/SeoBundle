@@ -35,17 +35,17 @@ class PaginationMetaExtension extends \Twig_Extension
     protected $accessor;
 
     /**
-     * @var ContainerInterface
+     * @var array
      */
-    protected $container;
+    protected $badRouteInfoParams;
 
     /**
      * PaginationMetaExtension constructor.
      * @param RouterInterface $router
      */
-    public function __construct(RouterInterface $router, ContainerInterface $container)
+    public function __construct(RouterInterface $router, array $badRouteInfoParams)
     {
-        $this->container = $container;
+        $this->badRouteInfoParams = $badRouteInfoParams;
         $this->router = $router;
         $this->accessor = PropertyAccess::createPropertyAccessor();
     }
@@ -154,9 +154,7 @@ class PaginationMetaExtension extends \Twig_Extension
      */
     public function cleanRouteInfoParams($routeInfoParams)
     {
-        $badRouteParams = $this->container->getParameter('skuola_seo.bad_route_info_params');
-
-        foreach($badRouteParams as $badParam)
+        foreach($this->badRouteInfoParams as $badParam)
         {
             if(isset($routeInfoParams[$badParam])) unset($routeInfoParams[$badParam]);
         }
